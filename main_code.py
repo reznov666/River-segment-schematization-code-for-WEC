@@ -160,26 +160,26 @@ def build_table():
             basin_in_from_out = set()
             dic = {}  # basin : row
             while basin_out:
-                cursor = basin_out.pop() #除去干流外点的from_node
+                cursor = basin_out.pop() 
                 u_node = to_node[find_row(from_node, cursor)]
-                row = find_row(did, u_node) #判断除干流外的点的to_node是否有和干流一致的
+                row = find_row(did, u_node) 
                 if row is not None:
                     basin_in_from_out.add(cursor)
-                    dic[cursor] = row + 1  #{cursor:row+1(对应下一个did，即uid)}
+                    dic[cursor] = row + 1  
                 elif u_node in basin_in_from_out:
-                    dic[cursor] = dic[u_node] #一个支流一起分类
+                    dic[cursor] = dic[u_node] 
                     basin_in_from_out.add(cursor)
                 else:
-                    basin_out.insert(0, cursor) #插到最前面
+                    basin_out.insert(0, cursor)
             basinE = []
             for i in range(uid.__len__()):
                 basinE.append([])
             for i in dic:
-                basinE[dic[i]].append(i) #每个uid对应的子流域放一起
+                basinE[dic[i]].append(i) 
             str_subbasinE = [''] * uid.__len__()
             for i, ele in enumerate(basinE):
                 if ele:
-                    str_subbasinE[i] = str(ele).replace('\'', '').strip('[]') #str(ele)：将列表 ele 转换为字符串，例如 [‘102’, ‘103’] → "['102', '103']"。.replace('\'', '')：去掉字符串中的单引号 '，变成 "[102, 103]"。.strip('[]')：去掉两边的中括号，变成 "102, 103"。
+                    str_subbasinE[i] = str(ele).replace('\'', '').strip('[]') 
             df.insert(0, 'subbasinE', str_subbasinE)
 
             Q0_list = [0] * uid.__len__()
@@ -234,7 +234,7 @@ def build_table():
                 q1[i] = EsubA[i] * flow_efficient[i]
                 q2[i] = subA[i] * flow_efficient[i]
                 t[i] = length[from_node.index(uid[i])] / u
-                kcod[i] = kcod0 * 1.074**(tmp - 20)
+                kcod[i] = kcod0 * 1.074**(tmp - 20)  #Decay coefficient is converted according to temperature.
             Q[0] = (Q0 + q1[0] + q2[0])
             for i in range(1, uid.__len__()):
                 Q0_list[i] = Q[i-1]
@@ -324,7 +324,7 @@ def build_table():
             for year_index, year in enumerate(target_years):
                 # generate df_n based on df
                 df_n = df
-                df_n['kcod'] = knh3 * 1.045**(tmp - 20)                #TODO
+                df_n['kcod'] = knh3 * 1.045**(tmp - 20)                #TODO Decay coefficient is converted according to temperature.
                 # change the C0 to value fo NH4
                 df_n.loc[0, 'COD0'] = concentration_table_NH4[C0]
                 df_n.loc[len(df_n['CODs']) - 1, 'CODs'] = concentration_table_NH4[tail_wqt]
@@ -376,5 +376,6 @@ def build_table():
 if __name__ == '__main__':
     build_table()
 
-    # 定义源文件夹和目标文件夹路径
+    # Define the paths of the source folder and the target folder
+
 
